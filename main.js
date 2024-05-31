@@ -61,35 +61,37 @@ function Game() {
 
         //check rows and cols
         for(i=0; i<3; i++){
-            if(gameboard[i][0]!='' && gameboard[i][0]==gameboard[i][1] && gameboard[i][1]==gameboard[i][2]){winGame(currentPlayer)}
-            if(gameboard[0][i]!='' && gameboard[0][i]==gameboard[1][i] && gameboard[1][i]==gameboard[2][i]){winGame(currentPlayer)}
+            if(gameboard[i][0]!='' && gameboard[i][0]==gameboard[i][1] && gameboard[i][1]==gameboard[i][2]){return 1}
+            if(gameboard[0][i]!='' && gameboard[0][i]==gameboard[1][i] && gameboard[1][i]==gameboard[2][i]){return 1}
         }
         //check diagonals
-        if(gameboard[0][0] == gameboard[1][1] && gameboard[1][1] == gameboard[2][2] && gameboard[0][0] != ''){winGame(currentPlayer)}
-        if(gameboard[0][2] == gameboard[1][1] && gameboard[1][1] == gameboard[2][0] && gameboard[0][2] != ''){winGame(currentPlayer)}
+        if(gameboard[0][0] == gameboard[1][1] && gameboard[1][1] == gameboard[2][2] && gameboard[0][0] != ''){return 1}
+        if(gameboard[0][2] == gameboard[1][1] && gameboard[1][1] == gameboard[2][0] && gameboard[0][2] != ''){return 1}
         printBoard()
         switchPlayer()
     }
 
-    const winGame = (player) => {
-        console.log(player.getName() + ' WINS!!')
-    }
     return {play, getCurrentPlayer, getBoard: gameboardObj.getBoard}
 }
 
 function displayController(){
     const board = document.querySelector('.board');
     let game = new Game();
+    const msgBox = document.querySelector('.msg');
 
     const newGame = () => {
         game = "";
         game = new Game();
         updateBoard();
+
     }
     const updateBoard = () =>{
         //clear board
         board.innerHTML='';
         let gameboard = game.getBoard();
+
+        msgBox.textContent = `${game.getCurrentPlayer().getName()}'s turn`
+
         for(i=0;i<3; i++){
             for(j=0;j<3;j++){
                 //create each box with required data and event listener
@@ -105,6 +107,11 @@ function displayController(){
         }
     }
 
+    const freezeBoard = () => {
+        var new_element = board.cloneNode(true);
+        board.parentNode.replaceChild(new_element, board);
+    }
+ 
     const clickBox = (e) => {
         //get row and col value
         let row = e.target.dataset.row;
@@ -112,9 +119,15 @@ function displayController(){
         
         //only changeable once
         if(e.target.textContent){return}
+        
+        if(game.play(row,col)){
+            updateBoard();
+            msgBox.textContent = `${game.getCurrentPlayer().getName()} WINS!`;
+            freezeBoard();
+        }else{
+            updateBoard();
+        }
 
-        game.play(row,col);
-        updateBoard();
     }
 
     const newGameBtn = document.querySelector("#new");
