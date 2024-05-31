@@ -38,7 +38,7 @@ function Player(name, symbol) {
 }
 
 function Game() {
-    let gameboardObj = Gameboard();
+    let gameboardObj = new Gameboard();
     let gameboard = gameboardObj.getBoard();
     let player1 = Player('Player 1', 'X');
     let player2 = Player('Player 2', 'O');
@@ -74,6 +74,52 @@ function Game() {
     const winGame = (player) => {
         console.log(player.getName() + ' WINS!!')
     }
-    return {play, getCurrentPlayer}
+    return {play, getCurrentPlayer, getBoard: gameboardObj.getBoard}
 }
-const game = new Game();
+
+function displayController(){
+    const board = document.querySelector('.board');
+    let game = new Game();
+
+    const newGame = () => {
+        game = "";
+        game = new Game();
+        updateBoard();
+    }
+    const updateBoard = () =>{
+        //clear board
+        board.innerHTML='';
+        let gameboard = game.getBoard();
+        for(i=0;i<3; i++){
+            for(j=0;j<3;j++){
+                //create each box with required data and event listener
+                let newDiv = document.createElement('button');
+                newDiv.className = 'box';
+                newDiv.textContent = gameboard[i][j];
+                newDiv.dataset.row = i;
+                newDiv.dataset.column = j;
+                newDiv.addEventListener("click",clickBox);
+                board.appendChild(newDiv);
+                
+            }
+        }
+    }
+
+    const clickBox = (e) => {
+        //get row and col value
+        let row = e.target.dataset.row;
+        let col = e.target.dataset.column;
+        
+        //only changeable once
+        if(e.target.textContent){return}
+
+        game.play(row,col);
+        updateBoard();
+    }
+
+    const newGameBtn = document.querySelector("#new");
+    newGameBtn.addEventListener("click", newGame)
+    return{newGame}
+}
+disp = new displayController()
+disp.newGame();
