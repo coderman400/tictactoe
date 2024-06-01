@@ -67,6 +67,13 @@ function Game() {
         //check diagonals
         if(gameboard[0][0] == gameboard[1][1] && gameboard[1][1] == gameboard[2][2] && gameboard[0][0] != ''){return 1}
         if(gameboard[0][2] == gameboard[1][1] && gameboard[1][1] == gameboard[2][0] && gameboard[0][2] != ''){return 1}
+        drawFlag = 1;
+        for(i=0; i<3; i++){
+            for(j=0; j<3; j++){
+                if(!gameboard[i][j]){drawFlag = 0}
+            }
+        }
+        if(drawFlag){return 2}
         printBoard()
         switchPlayer()
     }
@@ -120,15 +127,21 @@ function displayController(){
         
         //only changeable once
         if(e.target.textContent){return}
-        
-        if(game.play(row,col)){
-            updateBoard();
-            msgBox.textContent = `${game.getCurrentPlayer().getName()} WINS!`;
-            freezeBoard();
-        }else{
-            updateBoard();
-        }
 
+        switch(game.play(row,col)){
+            case 1:
+                updateBoard();
+                msgBox.textContent = `${game.getCurrentPlayer().getName()} WINS!`;
+                freezeBoard();
+                break;
+            case 2:
+                updateBoard();
+                msgBox.textContent = `ITS A DRAW`
+                break;
+            default:
+                updateBoard();
+                break;
+        }
     }
 
     const newGameBtn = document.querySelector("#new");
