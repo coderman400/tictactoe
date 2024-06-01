@@ -75,7 +75,7 @@ function Game() {
 }
 
 function displayController(){
-    const board = document.querySelector('.board');
+    let board = document.querySelector('.board');
     let game = new Game();
     const msgBox = document.querySelector('.msg');
 
@@ -86,6 +86,7 @@ function displayController(){
 
     }
     const updateBoard = () =>{
+        board = document.querySelector('.board')
         //clear board
         board.innerHTML='';
         let gameboard = game.getBoard();
