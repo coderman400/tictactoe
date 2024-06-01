@@ -37,6 +37,8 @@ function Game() {
     let currentPlayer = player1;
 
     const setName = (p1, p2) => {
+        if(p1==''){p1 = "Player1";}
+        if(p2==''){p2 = "Player2";}
         player1.setName(p1);
         player2.setName(p2);
     }
@@ -84,14 +86,14 @@ function displayController(){
     let board = document.querySelector('.board');
     let game = new Game();
     const msgBox = document.querySelector('.msg');
-
+    let state = 0;
     //var for flipping player symbols in newGame()
     let k = 1;
 
     const newGame = () => {
         game = "";
         game = new Game();
-
+        state = 0;
         //switch player symbols at each newgame
         k = (k==1 ? 0 : 1);
         if(k==1){
@@ -103,13 +105,34 @@ function displayController(){
         updateBoard();
 
     }
+
+    const updateName = () => {
+        switch(state){
+            case 0:
+                msgBox.textContent = `${game.getCurrentPlayer().getName()}'s turn`;
+                console.log('UPDATED');
+                break;
+            case 1:
+                msgBox.textContent = `${game.getCurrentPlayer().getName()} WINS!`;
+                break;
+            case 2:
+                msgBox.textContent = `ITS A DRAW`
+                break;
+            default:
+                msgBox.textContent = `${game.getCurrentPlayer().getName()}'s turn`;
+                console.log('UPDATED');
+                break;
+        }
+        
+    }
+
     const updateBoard = () =>{
         board = document.querySelector('.board')
         //clear board
         board.innerHTML='';
         let gameboard = game.getBoard();
 
-        msgBox.textContent = `${game.getCurrentPlayer().getName()}'s turn`
+        updateName();
 
         for(i=0;i<3; i++){
             for(j=0;j<3;j++){
@@ -140,19 +163,12 @@ function displayController(){
         //only changeable once
         if(e.target.textContent){return}
 
-        switch(game.play(row,col)){
-            case 1:
-                updateBoard();
-                msgBox.textContent = `${game.getCurrentPlayer().getName()} WINS!`;
-                freezeBoard();
-                break;
-            case 2:
-                updateBoard();
-                msgBox.textContent = `ITS A DRAW`
-                break;
-            default:
-                updateBoard();
-                break;
+        state = game.play(row,col);
+        if(state == 1){
+            updateBoard();
+            freezeBoard();
+        }else{
+            updateBoard();
         }
     }
 
@@ -173,7 +189,7 @@ function displayController(){
         event.preventDefault();
         game.setName(player1.value, player2.value)
         changeNameDialog.close()
-        updateBoard();
+        updateName()
     })
 
     //button to call new game function
