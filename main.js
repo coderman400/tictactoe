@@ -12,19 +12,11 @@ function Gameboard() {
 
     const getBoard = () => gameboard;
 
+    //set value of board 
     const setBoard = (row, col, value) => {
         gameboard[row][col] = value;
     }
-
-    const resetBoard = () => {
-        for(i=0; i<rows; i++){
-            for(j=0; j<cols; j++){
-                gameboard[i][j] = '';
-            }
-        }
-    }
-
-    return {getBoard, setBoard, resetBoard};
+    return {getBoard, setBoard};
 }
 
 function Player(name, symbol) {
@@ -60,6 +52,8 @@ function Game() {
             console.log(gameboard[i]);
         }
       };
+    
+    //play a round
     const play = (row, col) => {
         console.log(currentPlayer.getName() + ' plays');
         gameboardObj.setBoard(row, col, currentPlayer.getSymbol());
@@ -91,9 +85,21 @@ function displayController(){
     let game = new Game();
     const msgBox = document.querySelector('.msg');
 
+    //var for flipping player symbols in newGame()
+    let k = 1;
+
     const newGame = () => {
         game = "";
         game = new Game();
+
+        //switch player symbols at each newgame
+        k = (k==1 ? 0 : 1);
+        if(k==1){
+            game.setName(player1.value, player2.value);
+        }else{
+            game.setName(player2.value, player1.value);
+        }
+
         updateBoard();
 
     }
@@ -120,6 +126,7 @@ function displayController(){
         }
     }
 
+    //freeze board on win
     const freezeBoard = () => {
         var new_element = board.cloneNode(true);
         board.parentNode.replaceChild(new_element, board);
@@ -149,14 +156,19 @@ function displayController(){
         }
     }
 
+    //dom objects related to name changing
     const changeNameBtn = document.querySelector('#name-change')
     const changeNameDialog = document.querySelector('#name');
     const confirmBtn = document.querySelector('#confirmBtn');
     const player1 = document.querySelector('#player1');
     const player2 = document.querySelector('#player2');
+
+    //button to open name change dialog
     changeNameBtn.addEventListener("click", ()=>{
         changeNameDialog.showModal();
     })
+
+    //button to give new names to game object
     confirmBtn.addEventListener('click', (event)=>{
         event.preventDefault();
         game.setName(player1.value, player2.value)
@@ -164,6 +176,7 @@ function displayController(){
         updateBoard();
     })
 
+    //button to call new game function
     const newGameBtn = document.querySelector("#new");
     newGameBtn.addEventListener("click", newGame)
     return{newGame}
