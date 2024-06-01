@@ -6,10 +6,25 @@
         <script defer src="main.js"></script>
     </head>
     <body>
+        <dialog id="name">
+            <form>
+                <p>
+                    <label>Player 1: <input id = "player1" type="text"></label>
+                    <label>Player 2: <input id = "player2" type="text"></label>
+                </p>
+                <div>
+                    <button class = 'formbutton' id= "cancelBtn" value="cancel" formmethod="dialog">Cancel</button>
+                    <button class = 'formbutton' id="confirmBtn" value="default">Confirm</button>
+                </div>
+            </form>
+        </dialog>
         <div class="container">
             <div class="msg"></div>
             <div class="board"></div>
-            <div class="buttons"><button id="new">NEW GAME</button></div>
+            <div class="buttons">
+                <button id="new">NEW GAME</button>
+                <button id="name-change">CHANGE NAME</button>
+            </div>
         </div>
     </body>
 </html>

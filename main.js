@@ -30,19 +30,24 @@ function Gameboard() {
 function Player(name, symbol) {
     this.name = name;
     this.symbol = symbol;
-
+    const setName = (n) => {name = n}
     const getName = () => name;
     const getSymbol = () => symbol;
 
-    return {getName, getSymbol};
+    return {getName, getSymbol, setName};
 }
 
 function Game() {
     let gameboardObj = new Gameboard();
     let gameboard = gameboardObj.getBoard();
-    let player1 = Player('Player 1', 'X');
-    let player2 = Player('Player 2', 'O');
+    let player1 = new Player('Player 1', 'X');
+    let player2 = new Player('Player 2', 'O');
     let currentPlayer = player1;
+
+    const setName = (p1, p2) => {
+        player1.setName(p1);
+        player2.setName(p2);
+    }
     
     const getCurrentPlayer = () => currentPlayer;
 
@@ -78,7 +83,7 @@ function Game() {
         switchPlayer()
     }
 
-    return {play, getCurrentPlayer, getBoard: gameboardObj.getBoard}
+    return {play, getCurrentPlayer, getBoard: gameboardObj.getBoard, setName}
 }
 
 function displayController(){
@@ -143,6 +148,21 @@ function displayController(){
                 break;
         }
     }
+
+    const changeNameBtn = document.querySelector('#name-change')
+    const changeNameDialog = document.querySelector('#name');
+    const confirmBtn = document.querySelector('#confirmBtn');
+    const player1 = document.querySelector('#player1');
+    const player2 = document.querySelector('#player2');
+    changeNameBtn.addEventListener("click", ()=>{
+        changeNameDialog.showModal();
+    })
+    confirmBtn.addEventListener('click', (event)=>{
+        event.preventDefault();
+        game.setName(player1.value, player2.value)
+        changeNameDialog.close()
+        updateBoard();
+    })
 
     const newGameBtn = document.querySelector("#new");
     newGameBtn.addEventListener("click", newGame)
